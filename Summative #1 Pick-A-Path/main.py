@@ -2,421 +2,714 @@ import os
 import sys
 import time
 
-def play_intro():
-    answer = None
-    title = "LOADING GAME........."
-    for i in range(len(title) + 1):
-        print(f"\r{title[:i]}", end="")
-        time.sleep(0.05)
-    while answer == None:
-        answer = input("\nPress ENTER to start!")
 
-def transition_animation():
-    print("-----------------------------------------------------")
-    print("You are about to make a choice...")
-    for i in range(3):
-        print(".", end="")
-        time.sleep(0.5)
-    print("\n-----------------------------------------------------")
+# Colors
+RESET = "\033[0m"
+RED = "\033[91m"
+GREEN = "\033[92m"
+YELLOW = "\033[93m"
+CYAN = "\033[96m"
+MAGENTA = "\033[95m"
+WHITE = "\033[97m"
 
-def textEngine(title, delay=0.03, new_line=True):
-    for char in title:
-        print(char, end="")
+
+def type_text(message, delay=0.03, color=CYAN):
+    for character in message:
+        print(f"{color}{character}{RESET}", end="")
         sys.stdout.flush()
         time.sleep(delay)
-    if new_line:
-        print()
+    print()
+
 
 def clear_screen():
-    os.system('cls' if os.name == 'nt' else 'clear')
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system("cls" if os.name == "nt" else "clear")
 
 
-def get_choice(prompt, options):
+def continue_game():
+    input(f"\n{YELLOW}Press ENTER to continue...{RESET}")
+
+
+def ask_choice(prompt, choices):
     while True:
-        choice = input(prompt).strip()
-        if choice in options:
+        choice = input(f"{YELLOW}{prompt}{RESET}").strip()
+
+        if choice in choices:
             return choice
-        print("Invalid choice. Please try again.")
+
+        print(f"{RED}Invalid choice. Please try again.{RESET}")
+
 
 def lose_life(lives):
     lives -= 1
-    print("\nYou lost one life.")
-    print(f"Lives remaining: {lives}")
+    print(f"\n{RED}You lost one life.{RESET}")
+    print(f"{YELLOW}Lives remaining: {lives}{RESET}")
     return lives
 
-def checkpoint(lives):
-    print("\n-----------------------------------------------------")
-    print("CHECKPOINT REACHED")
-    print("Your progress has been saved.")
-    print(f"Lives remaining: {lives}")
-    print("-----------------------------------------------------")
-    return lives
 
-def logic_puzzle(lives):
-    textEngine("\nA stone tablet appears in front of you.")
-    textEngine("The tablet asks:")
-    textEngine("If two numbers add up to 10 and one number is 6, what is the other number?")
-    print("1. 3")
-    print("2. 4")
-    print("3. 5")
-    print("4. 6")
+def main():
 
-    answer = get_choice("Enter your answer: ", ["1", "2", "3", "4"])
+    # Loading screen
+    loading_message = "LOADING GAME........."
 
-    if answer == "2":
-        textEngine("Correct. The stone door opens.")
-        return lives, True
-    else:
-        lives = lose_life(lives)
-        return lives, False
+    for character_count in range(len(loading_message) + 1):
+        print(
+            f"\r{MAGENTA}{loading_message[:character_count]}{RESET}",
+            end=""
+        )
+        time.sleep(0.05)
 
-def pattern_puzzle(lives):
-    textEngine("\nYou find another ancient puzzle.")
-    textEngine("Complete the pattern:")
-    textEngine("2, 4, 6, 8, ?")
-    print("1. 9")
-    print("2. 10")
-    print("3. 11")
-    print("4. 12")
-
-    answer = get_choice("Enter your answer: ", ["1", "2", "3", "4"])
-
-    if answer == "2":
-        textEngine("Correct. A hidden passage opens.")
-        return lives, True
-    else:
-        lives = lose_life(lives)
-        return lives, False
-
-def memory_puzzle(lives):
-    textEngine("\nThe final puzzle asks you to remember the symbols.")
-    textEngine("Earlier, the temple showed you these symbols:")
-    textEngine("SUN - MOON - STAR")
-    time.sleep(2)
+    continue_game()
 
     clear_screen()
 
-    textEngine("Which symbol was shown in the middle?")
-    print("1. SUN")
-    print("2. MOON")
-    print("3. STAR")
-    print("4. CLOUD")
+    print(f"{MAGENTA}WELCOME TO THE PICK-A-PATH GAME!{RESET}")
+    print(f"{WHITE}You will be presented with a series of choices.")
+    print("Your decisions will affect the outcome of your journey.")
+    print(f"{YELLOW}Make your choices wisely.{RESET}")
 
-    answer = get_choice("Enter your answer: ", ["1", "2", "3", "4"])
-
-    if answer == "2":
-        textEngine("Correct. You have completed the Temple of Knowledge.")
-        return lives, True
-    else:
-        lives = lose_life(lives)
-        return lives, False
-
-def temple_of_knowledge(lives):
-    clear_screen()
-    textEngine("TEMPLE OF KNOWLEDGE")
-    textEngine("You enter an ancient temple filled with mysterious writing.")
-    textEngine("The temple contains three challenges.")
     time.sleep(1)
 
-    lives, correct = logic_puzzle(lives)
+    player_name = input(
+        f"\n{YELLOW}Enter Player Name: {RESET}"
+    )
 
-    if lives <= 0:
-        return lives, False
+    lives = 3
 
-    if correct:
-        textEngine("You continue deeper into the temple.")
-        time.sleep(1)
-
-    lives, correct = pattern_puzzle(lives)
-
-    if lives <= 0:
-        return lives, False
-
-    if correct:
-        textEngine("The temple begins to glow.")
-        time.sleep(1)
-
-    lives, correct = memory_puzzle(lives)
-
-    if lives <= 0:
-        return lives, False
-
-    if correct:
-        textEngine("Since you learned all the knowledge stored in the temple,")
-        textEngine("you are ready to enter the next stage.")
-        return lives, True
-
-def meet_npc(lives):
+    # The story begins
     clear_screen()
-    textEngine("You meet a mysterious gatekeeper.")
-    textEngine("The gatekeeper stands in front of a large stone entrance.")
-    textEngine("He looks at you and says:")
-    textEngine('"Who are you?"')
 
-    print("\n1. I am looking for answers.")
+    type_text(f"Welcome, {player_name}.")
+    type_text(
+        "You wake up in a mysterious temple with no memory of how you got there."
+    )
+    type_text(
+        "You look around and find ancient writing on the walls."
+    )
+    type_text(
+        "The writing tells the story of a destroyed kingdom."
+    )
+    type_text(
+        "You must discover what happened and find a way to restore the kingdom."
+    )
+
+    time.sleep(1)
+
+    type_text(
+        "\nYou discover an ancient temple filled with knowledge."
+    )
+
+    print(f"\n{MAGENTA}CHECKPOINT REACHED{RESET}")
+    print(f"{GREEN}Your progress has been saved.{RESET}")
+    print(f"{YELLOW}Lives remaining: {lives}{RESET}")
+
+    continue_game()
+    clear_screen()
+
+    # Temple of Knowledge
+    type_text(
+        "TEMPLE OF KNOWLEDGE",
+        color=MAGENTA
+    )
+
+    type_text(
+        "You enter an ancient temple filled with mysterious writing."
+    )
+    type_text(
+        "The temple contains three challenges."
+    )
+
+    time.sleep(1)
+
+    # Puzzle 1
+    type_text("\nA stone tablet appears in front of you.")
+    type_text("The tablet asks:")
+    type_text(
+        "If two numbers add up to 10 and one number is 6, "
+        "what is the other number?"
+    )
+
+    print(f"{YELLOW}1. 3")
+    print("2. 4")
+    print("3. 5")
+    print(f"4. 6{RESET}")
+
+    if ask_choice(
+        "Enter your answer: ",
+        ["1", "2", "3", "4"]
+    ) == "2":
+
+        type_text(
+            "Correct. The stone door opens.",
+            color=GREEN
+        )
+
+    else:
+        lives = lose_life(lives)
+
+    if lives <= 0:
+        type_text(
+            "\nYou were unable to complete the Temple of Knowledge.",
+            color=RED
+        )
+        type_text("GAME OVER.", color=RED)
+        return
+
+    continue_game()
+    clear_screen()
+
+    # Puzzle 2
+    type_text(
+        "TEMPLE OF KNOWLEDGE",
+        color=MAGENTA
+    )
+
+    type_text("You continue deeper into the temple.")
+    type_text("You find another ancient puzzle.")
+    type_text("Complete the pattern:")
+    type_text("2, 4, 6, 8, ?")
+
+    print(f"{YELLOW}1. 9")
+    print("2. 10")
+    print("3. 11")
+    print(f"4. 12{RESET}")
+
+    if ask_choice(
+        "Enter your answer: ",
+        ["1", "2", "3", "4"]
+    ) == "2":
+
+        type_text(
+            "Correct. A hidden passage opens.",
+            color=GREEN
+        )
+
+    else:
+        lives = lose_life(lives)
+
+    if lives <= 0:
+        type_text(
+            "\nYou were unable to complete the Temple of Knowledge.",
+            color=RED
+        )
+        type_text("GAME OVER.", color=RED)
+        return
+
+    continue_game()
+
+    # MEMORY PUZZLE
+
+    clear_screen()
+
+    type_text(
+        "MEMORY CHALLENGE",
+        color=MAGENTA
+    )
+
+    type_text(
+        "The final puzzle asks you to remember the symbols."
+    )
+
+    type_text(
+        "Remember these symbols carefully:"
+    )
+
+    type_text(
+        "SUN - MOON - STAR",
+        color=YELLOW
+    )
+
+    time.sleep(2)
+
+    # NO ENTER HERE.
+    # The screen clears automatically so the player
+    # must remember the symbols.
+
+    clear_screen()
+
+    type_text(
+        "Which symbol was shown in the middle?"
+    )
+
+    print(f"{YELLOW}1. SUN")
+    print("2. MOON")
+    print("3. STAR")
+    print(f"4. CLOUD{RESET}")
+
+    if ask_choice(
+        "Enter your answer: ",
+        ["1", "2", "3", "4"]
+    ) == "2":
+
+        type_text(
+            "Correct. You have completed the Temple of Knowledge.",
+            color=GREEN
+        )
+
+    else:
+        lives = lose_life(lives)
+
+    if lives <= 0:
+        type_text(
+            "\nYou were unable to complete the Temple of Knowledge.",
+            color=RED
+        )
+        type_text("GAME OVER.", color=RED)
+        return
+
+    type_text(
+        "\nSince you learned all the knowledge stored in the temple,"
+    )
+    type_text(
+        "you are ready to enter the next stage."
+    )
+
+    continue_game()
+    clear_screen()
+
+    # GATEKEEPER
+
+    type_text(
+        "THE GATEKEEPER",
+        color=MAGENTA
+    )
+
+    type_text(
+        "You meet a mysterious gatekeeper."
+    )
+    type_text(
+        "The gatekeeper stands in front of a large stone entrance."
+    )
+    type_text(
+        "He looks at you and says:"
+    )
+    type_text(
+        '"Who are you?"',
+        color=YELLOW
+    )
+
+    print(f"\n{YELLOW}1. I am looking for answers.")
     print("2. I am the prince of this kingdom.")
-    print("3. Get out of my way bro.")
+    print(f"3. Get out of my way bro.{RESET}")
 
-    choice = get_choice("What do you say? ", ["1", "2", "3"])
+    choice = ask_choice(
+        "What do you say? ",
+        ["1", "2", "3"]
+    )
 
     if choice == "1":
-        textEngine("\nThe gatekeeper looks interested.")
-        textEngine('"Then perhaps you are worthy to continue."')
-        return lives, True
+
+        type_text(
+            "\nThe gatekeeper looks interested."
+        )
+        type_text(
+            '"Then perhaps you are worthy to continue."',
+            color=GREEN
+        )
 
     elif choice == "2":
-        textEngine("\nThe gatekeeper does not believe you.")
-        textEngine('"Prove that you are truly the prince."')
-        return lives, True
 
-    elif choice == "3":
-        textEngine("\nThe gatekeeper becomes angry.")
-        textEngine("GET OUT OF MY WAY BRO.")
+        type_text(
+            "\nThe gatekeeper does not believe you."
+        )
+        type_text(
+            '"Prove that you are truly the prince."',
+            color=YELLOW
+        )
+        type_text(
+            "He lets you continue, but warns you to be careful."
+        )
+
+    else:
+
+        type_text(
+            "\nThe gatekeeper becomes angry.",
+            color=RED
+        )
+        type_text(
+            "GET OUT OF MY WAY BRO.",
+            color=RED
+        )
+
         lives = lose_life(lives)
 
         if lives <= 0:
-            return lives, False
+            type_text(
+                "\nYour journey has ended.",
+                color=RED
+            )
+            type_text(
+                "GAME OVER.",
+                color=RED
+            )
+            return
 
-        textEngine("The gatekeeper allows you to leave.")
-        return lives, True
+        type_text(
+            "The gatekeeper allows you to continue."
+        )
 
-def village_path(lives):
+    continue_game()
     clear_screen()
-    textEngine("You enter an abandoned village.")
-    textEngine("The village is empty, but you notice an old building.")
-    textEngine("It appears to be a restaurant.")
 
-    print("\n1. Enter the restaurant")
-    print("2. Continue through the village")
+    # CHOOSE A ROUTE
 
-    choice = get_choice("Enter 1 or 2: ", ["1", "2"])
+    type_text(
+        "THE FORK IN THE ROAD",
+        color=MAGENTA
+    )
 
-    if choice == "1":
-        textEngine("\nYou enter the restaurant.")
-        textEngine("Inside, you discover an old map of the destroyed kingdom.")
-        textEngine("The map reveals a hidden route to the second dungeon.")
-        return lives, True
+    type_text(
+        "You arrive at a fork in the road."
+    )
+    type_text(
+        "Two possible routes are in front of you."
+    )
 
-    elif choice == "2":
-        textEngine("\nYou continue through the village.")
-        textEngine("The road leads you toward a mysterious door.")
-        return lives, True
+    print(f"\n{YELLOW}1. Valley")
+    print(f"2. Abandoned Village{RESET}")
 
-def valley_path(lives):
+    route = ask_choice(
+        "Choose a route: ",
+        ["1", "2"]
+    )
+
+    if route == "1":
+
+        # Valley path
+        continue_game()
+        clear_screen()
+
+        type_text(
+            "THE DARK VALLEY",
+            color=MAGENTA
+        )
+
+        type_text(
+            "You enter a dark valley."
+        )
+        type_text(
+            "Three travelers are hiding near the mountain."
+        )
+        type_text(
+            "They warn you about dangerous creatures ahead."
+        )
+
+        print(f"\n{YELLOW}1. Hide and wait for the danger to pass")
+        print(f"2. Try to stop the danger{RESET}")
+
+        valley_choice = ask_choice(
+            "Enter 1 or 2: ",
+            ["1", "2"]
+        )
+
+        if valley_choice == "1":
+
+            type_text(
+                "\nYou hide behind a large rock."
+            )
+            type_text(
+                "The danger passes without noticing you."
+            )
+            type_text(
+                "You find a safe route through the valley.",
+                color=GREEN
+            )
+
+        else:
+
+            type_text(
+                "\nYou try to stop the danger.",
+                color=YELLOW
+            )
+            type_text(
+                "Unfortunately, the creature notices you.",
+                color=RED
+            )
+
+            lives = lose_life(lives)
+
+            if lives <= 0:
+                type_text(
+                    "\nYou could not continue your journey.",
+                    color=RED
+                )
+                type_text(
+                    "GAME OVER.",
+                    color=RED
+                )
+                return
+
+            type_text(
+                "You escape into a nearby passage."
+            )
+
+    else:
+
+        # Village path
+        continue_game()
+        clear_screen()
+
+        type_text(
+            "THE ABANDONED VILLAGE",
+            color=MAGENTA
+        )
+
+        type_text(
+            "You enter an abandoned village."
+        )
+        type_text(
+            "The village is empty, but you notice an old building."
+        )
+        type_text(
+            "It appears to be a restaurant."
+        )
+
+        print(f"\n{YELLOW}1. Enter the restaurant")
+        print(f"2. Continue through the village{RESET}")
+
+        village_choice = ask_choice(
+            "Enter 1 or 2: ",
+            ["1", "2"]
+        )
+
+        if village_choice == "1":
+
+            type_text(
+                "\nYou enter the restaurant."
+            )
+            type_text(
+                "Inside, you discover an old map of the destroyed kingdom."
+            )
+            type_text(
+                "The map reveals a hidden route to the second dungeon.",
+                color=GREEN
+            )
+
+        else:
+
+            type_text(
+                "\nYou continue through the village."
+            )
+            type_text(
+                "The road leads you toward a mysterious door."
+            )
+
+    continue_game()
     clear_screen()
-    textEngine("You enter a dark valley.")
-    textEngine("Three escapees are hiding near the mountain.")
-    textEngine("They warn you about dangerous creatures ahead.")
 
-    print("\n1. Hide and wait for the danger to pass")
-    print("2. Try to stop the danger")
+    # SECOND DUNGEON
 
-    choice = get_choice("Enter 1 or 2: ", ["1", "2"])
+    type_text(
+        "THE SECOND DUNGEON",
+        color=MAGENTA
+    )
 
-    if choice == "1":
-        textEngine("\nYou hide behind a large rock.")
-        textEngine("The danger passes without noticing you.")
-        textEngine("You find a safe route through the valley.")
-        return lives, True
+    type_text(
+        "You arrive at the second dungeon."
+    )
+    type_text(
+        "A strange gatekeeper blocks the entrance."
+    )
+    type_text(
+        '"I am the gatekeeper of the second dungeon."',
+        color=YELLOW
+    )
+    type_text(
+        '"You must answer my questions to pass."',
+        color=YELLOW
+    )
 
-    elif choice == "2":
-        textEngine("\nYou try to stop the danger.")
-        textEngine("Unfortunately, the creature notices you.")
-        lives = lose_life(lives)
+    print(f"\n{YELLOW}1. Ask if you can enter")
+    print(f"2. Walk away{RESET}")
 
-        if lives <= 0:
-            return lives, False
+    dungeon_choice = ask_choice(
+        "Enter 1 or 2: ",
+        ["1", "2"]
+    )
 
-        textEngine("You escape into a nearby passage.")
-        return lives, True
+    if dungeon_choice == "2":
 
-def choose_route(lives):
+        type_text(
+            "\nYou turn around and leave the dungeon."
+        )
+        type_text(
+            "You walk away from the kingdom."
+        )
+        type_text(
+            "You will never discover the truth.",
+            color=RED
+        )
+        type_text(
+            "GAME OVER.",
+            color=RED
+        )
+        return
+
+    type_text(
+        "\nThe gatekeeper allows you to enter.",
+        color=GREEN
+    )
+
+    continue_game()
     clear_screen()
-    textEngine("You arrive at a fork in the road.")
-    textEngine("Two possible routes are in front of you.")
 
-    print("\n1. Valley")
-    print("2. Restaurant")
+    # GOBLIN CHALLENGE
 
-    choice = get_choice("Choose a route: ", ["1", "2"])
+    type_text(
+        "THE GOBLIN'S BRIDGE",
+        color=MAGENTA
+    )
 
-    if choice == "1":
-        return valley_path(lives)
+    type_text(
+        "A goblin is guarding a bridge."
+    )
+    type_text(
+        "You must answer three questions correctly."
+    )
+    type_text(
+        "You only get two chances.",
+        color=YELLOW
+    )
 
-    elif choice == "2":
-        return village_path(lives)
-
-def second_dungeon(lives):
-    clear_screen()
-    textEngine("You arrive at the second dungeon.")
-    textEngine("A strange gatekeeper blocks the entrance.")
-    textEngine('"I am the gate keeper of the second dungeon."')
-    textEngine('"You must answer my questions to pass."')
-
-    print("\n1. Ask if you can enter")
-    print("2. Walk away")
-
-    choice = get_choice("Enter 1 or 2: ", ["1", "2"])
-
-    if choice == "2":
-        textEngine("\nYou turn around and leave the dungeon.")
-        textEngine("Unfortunately, you step on a hidden poisonous creature.")
-        textEngine("You have died. Game Over.")
-        return lives, False
-
-    elif choice == "1":
-        textEngine("\nThe gatekeeper allows you to enter.")
-        return dungeon_challenges(lives)
-
-def dungeon_challenges(lives):
-    textEngine("\nA goblin is guarding a bridge.")
-    textEngine("You must answer three questions correctly.")
-    textEngine("You only get two chances.")
+    questions = [
+        (
+            "Question 1: What is 5 + 5?",
+            ["1. 8", "2. 10", "3. 12"],
+            "2"
+        ),
+        (
+            "Question 2: Which number comes next?\n3, 6, 9, ?",
+            ["1. 10", "2. 11", "3. 12"],
+            "3"
+        ),
+        (
+            "Question 3: What was the middle symbol in the temple?",
+            ["1. SUN", "2. MOON", "3. STAR"],
+            "2"
+        )
+    ]
 
     chances = 2
     correct_answers = 0
 
-    while chances > 0 and correct_answers < 3:
-        textEngine("\nQuestion 1: What is 5 + 5?")
-        print("1. 8")
-        print("2. 10")
-        print("3. 12")
+    while chances > 0 and correct_answers < len(questions):
 
-        answer = get_choice("Enter your answer: ", ["1", "2", "3"])
+        question, choices, correct_answer = questions[correct_answers]
 
-        if answer == "2":
-            textEngine("Correct.")
+        type_text(
+            f"\n{question}",
+            color=YELLOW
+        )
+
+        for choice in choices:
+            print(f"{YELLOW}{choice}{RESET}")
+
+        answer = ask_choice(
+            "Enter your answer: ",
+            ["1", "2", "3"]
+        )
+
+        if answer == correct_answer:
+
+            type_text(
+                "Correct.",
+                color=GREEN
+            )
+
             correct_answers += 1
+
         else:
+
             chances -= 1
-            print(f"Wrong. Chances remaining: {chances}")
 
-        if chances <= 0:
-            break
+            type_text(
+                f"Wrong. Chances remaining: {chances}",
+                color=RED
+            )
 
-        if correct_answers < 3:
-            textEngine("\nQuestion 2: Which number comes next?")
-            textEngine("3, 6, 9, ?")
-            print("1. 10")
-            print("2. 11")
-            print("3. 12")
+    if correct_answers < len(questions):
 
-            answer = get_choice("Enter your answer: ", ["1", "2", "3"])
+        type_text(
+            "\nYou failed to answer the questions.",
+            color=RED
+        )
+        type_text(
+            "The goblin refuses to let you pass.",
+            color=RED
+        )
+        type_text(
+            "GAME OVER.",
+            color=RED
+        )
+        return
 
-            if answer == "3":
-                textEngine("Correct.")
-                correct_answers += 1
-            else:
-                chances -= 1
-                print(f"Wrong. Chances remaining: {chances}")
+    type_text(
+        "\nYou answered all three questions correctly.",
+        color=GREEN
+    )
+    type_text(
+        "The goblin moves away from the bridge.",
+        color=GREEN
+    )
 
-        if chances <= 0:
-            break
-
-        if correct_answers < 3:
-            textEngine("\nQuestion 3: What was the middle symbol in the temple?")
-            print("1. SUN")
-            print("2. MOON")
-            print("3. STAR")
-
-            answer = get_choice("Enter your answer: ", ["1", "2", "3"])
-
-            if answer == "2":
-                textEngine("Correct.")
-                correct_answers += 1
-            else:
-                chances -= 1
-                print(f"Wrong. Chances remaining: {chances}")
-
-    if correct_answers >= 3:
-        textEngine("\nYou answered all three questions correctly.")
-        textEngine("The goblin moves away from the bridge.")
-        return lives, True
-    else:
-        textEngine("\nYou failed to answer the questions.")
-        textEngine("The goblin refuses to let you pass.")
-        textEngine("Game Over.")
-        return lives, False
-
-def final_stage(lives):
+    continue_game()
     clear_screen()
-    textEngine("You have completed the dangerous journey.")
-    textEngine("The knowledge from the temple helped you survive.")
-    textEngine("The gatekeepers and puzzles tested your decisions.")
-    textEngine("You finally discover the truth about the destroyed kingdom.")
-    textEngine("The kingdom was destroyed because its people stopped learning.")
-    textEngine("You now have the knowledge needed to rebuild it.")
 
-    print("\n-----------------------------------------------------")
-    print("CONGRATULATIONS!")
-    print("YOU COMPLETED THE ADVENTURE!")
-    print("-----------------------------------------------------")
+    # ENDING
 
+    type_text(
+        "THE TRUTH",
+        color=MAGENTA
+    )
 
+    type_text(
+        "You have completed the dangerous journey."
+    )
+    type_text(
+        "The knowledge from the temple helped you survive."
+    )
+    type_text(
+        "The gatekeepers and puzzles tested your decisions."
+    )
+    type_text(
+        "You finally discover the truth about the destroyed kingdom."
+    )
 
-# Main Game Loop start here
-play_intro()
-clear_screen()
+    type_text(
+        "\nThe kingdom was destroyed because its people stopped learning.",
+        color=YELLOW
+    )
 
-print("-----------------------------------------------------")
-print("Welcome to the Pick-A-Path Game!")
-print("-----------------------------------------------------")
-print("You will be presented with a series of choices.")
-print("Your decisions will affect the outcome of your journey.")
-print("Make your choices wisely.")
-print("-----------------------------------------------------")
+    type_text(
+        "You now have the knowledge needed to rebuild it."
+    )
 
-time.sleep(1)
-
-player_name = input("\nEnter Player Name: ")
-
-lives = 3
-
-clear_screen()
-
-textEngine(f"Welcome, {player_name}.")
-textEngine("You wake up in a mysterious temple with no memory of how you got there.")
-textEngine("You look around and find ancient writing on the walls.")
-textEngine("The writing tells the story of a destroyed kingdom.")
-textEngine("You must discover what happened and find a way to restore the kingdom.")
-
-time.sleep(5)
-
-textEngine("\nYou discover an ancient temple filled with knowledge.")
-lives = checkpoint(lives)
-next = None
-if next == None:
-    next = input("\nPress ENTER to continue!")
-
-lives, completed = temple_of_knowledge(lives)
-
-if not completed or lives <= 0:
-    textEngine("\nYou were unable to complete the Temple of Knowledge.")
-    textEngine("Game Over.")
-
-lives, completed = meet_npc(lives)
-
-if not completed or lives <= 0:
-    textEngine("\nYour journey has ended.")
-    textEngine("Game Over.")
+    print()
+    print(f"{GREEN}CONGRATULATIONS!")
+    print(f"YOU COMPLETED THE ADVENTURE!{RESET}")
 
 
-lives, completed = choose_route(lives)
+# Replay system
+try:
 
-if not completed or lives <= 0:
-    textEngine("\nYou could not continue your journey.")
-    textEngine("Game Over.")
+    while True:
 
+        main()
 
-textEngine("\nYou continue deeper into the destroyed kingdom.")
-time.sleep(1)
+        replay_choice = ask_choice(
+            "\nDo you want to play again? (y/n): ",
+            ["y", "n"]
+        )
 
-lives, completed = second_dungeon(lives)
+        if replay_choice == "n":
 
-if not completed or lives <= 0:
-    textEngine("\nYou have reached the end of your journey.")
-    textEngine("Game Over.")
+            print(
+                f"\n{CYAN}Thank you for playing! Goodbye.{RESET}"
+            )
 
+            break
 
-final_stage(lives)
+except KeyboardInterrupt:
+
+    print(
+        f"\n\n{CYAN}Game stopped. Goodbye!{RESET}"
+    )
